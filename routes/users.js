@@ -1,4 +1,5 @@
 const express = require("express");
+const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 /* GET users listing. */

@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const User = require("./database/models/User");
 const Department = require("./database/models/Department");
 const Role = require("./database/models/Role");
+const bcrypt = require("bcrypt");
+
+const password = bcrypt.hashSync("admin", bcrypt.genSaltSync(10));
 
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
@@ -40,7 +43,7 @@ db.once("open", async function () {
     lastname: "User",
     dob: new Date(1992, 04, 20),
     email: "admin@lmp.com",
-    password: "admin",
+    password: password,
     contact: "9898988989",
     address1: "line 1",
     address2: "line 2",
