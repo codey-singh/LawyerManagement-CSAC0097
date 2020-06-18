@@ -26,6 +26,7 @@ router.post("/login", async function (req, res, next) {
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
+            role: user.role_id.role,
             user_id: user._id,
           });
           res.json({
