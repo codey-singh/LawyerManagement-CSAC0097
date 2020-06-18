@@ -15,26 +15,29 @@ router.post("/login", async function (req, res, next) {
   else {
     let user = await User.findOne({ email: username });
     console.log(user);
-    bcrypt.compare(password, user.password, async (err, same) => {
-      if (err || !same)
-        res.status(401).send("Username or password are incorrect");
-      else {
-        const accessToken = generateAccessToken({
-          firstname: user.firstname,
-          lastname: user.lastname,
-          email: user.email,
-          user_id: user._id,
-        });
-        accessTokens.push(accessToken);
-        res.json({
-          accessToken,
-          name: user.firstname + " " + user.lastname,
-          role: null,
-          email: user.email,
-          user_id: user._id,
-        });
-      }
-    });
+    if (user) {
+      bcrypt.compare(password, user.password, async (err, same) => {
+        if (err || !same)
+          res.status(401).send("Username or password are incorrect");
+        else {
+          const accessToken = generateAccessToken({
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            user_id: user._id,
+          });
+          res.json({
+            accessToken,
+            name: user.firstname + " " + user.lastname,
+            role: null,
+            email: user.email,
+            user_id: user._id,
+          });
+        }
+      });
+    } else {
+      res.setStatus(403).send();
+    }
   }
 });
 
