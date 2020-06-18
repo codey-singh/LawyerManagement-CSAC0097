@@ -36,7 +36,10 @@ db.once("open", async function () {
     { role: "GENERAL" },
   ]);
 
-  const adminRoleId = await Role.find({ role: "ADMIN" });
+  const adminRoleId = await Role.findOne({ role: "ADMIN" });
+
+  console.log(adminRoleId);
+
   if (await User.findOne()) await User.collection.drop();
   await User.create({
     firstname: "Admin",

@@ -4,6 +4,8 @@ const secret = process.env.AUTH_SECRET_KEY || "secretKey";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../database/models/User");
+const Role = require("../database/models/Role");
+const mongoose = require("mongoose");
 
 let accessTokens = [];
 
@@ -13,7 +15,7 @@ router.post("/login", async function (req, res, next) {
 
   if (!username || !password) res.sendStatus(403);
   else {
-    let user = await User.findOne({ email: username });
+    let user = await User.findOne({ email: username }).populate("role_id");
     console.log(user);
     if (user) {
       bcrypt.compare(password, user.password, async (err, same) => {
@@ -29,7 +31,7 @@ router.post("/login", async function (req, res, next) {
           res.json({
             accessToken,
             name: user.firstname + " " + user.lastname,
-            role: null,
+            role: user.role_id.role,
             email: user.email,
             user_id: user._id,
           });
@@ -47,7 +49,12 @@ router.delete("/logout", function (req, res, next) {
 
 router.post("/register", async function (req, res, next) {
   const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-  let user = await User.create({ ...req.body, password });
+  let generalRole = await Role.findOne({ role: "GENERAL" });
+  let user = await User.create({
+    ...req.body,
+    password,
+    role_id: generalRole._id,
+  });
   res.json({ ...user, password: null });
 });
 
