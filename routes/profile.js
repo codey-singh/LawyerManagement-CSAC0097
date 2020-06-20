@@ -1,15 +1,45 @@
 const express = require("express");
-const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 const User = require("../database/models/User");
 const router = express.Router();
+const moment = require("moment");
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
   // my profile
   let loggedInUser = req.user.user_id;
-  let userProfile = await User.findOne({ _id: loggedInUser });
+  let userProfile = await User.findOne(
+    { _id: loggedInUser },
+    {
+      email: 1,
+      firstname: 1,
+      lastname: 1,
+      phonenumber: 1,
+      department_id: 1,
+      role_id: 1,
+      dob: 1,
+    }
+  );
 
-  res.json({ ...userProfile._doc, password: null });
+  res.json({
+    ...userProfile._doc,
+    dob: moment(userProfile._doc.dob).format("yyyy-MM-DD"),
+  });
+});
+
+router.patch("/", async function (req, res, next) {
+  // my profile
+  let loggedInUser = req.user.user_id;
+
+  if (req.body.department_id === "") req.body.department_id = null;
+
+  let status = await User.updateOne(
+    { _id: loggedInUser },
+    {
+      ...req.body,
+    }
+  );
+
+  res.json(status);
 });
 
 router.get("/:profile_id", async function (req, res, next) {

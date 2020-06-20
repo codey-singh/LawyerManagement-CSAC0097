@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   contact: String,
   address1: String,
   address2: String,
+  phonenumber: String,
   role_id: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
   department_id: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
 });

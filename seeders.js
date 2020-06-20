@@ -50,6 +50,7 @@ db.once("open", async function () {
     contact: "9898988989",
     address1: "line 1",
     address2: "line 2",
+    phonenumber: "9999999999",
     role_id: adminRoleId._id,
   });
 
