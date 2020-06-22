@@ -20,7 +20,7 @@ const authenticateMiddleware = function authMiddleware(req, res, next) {
 const authorizationMiddleware = function authorizationMiddleware(roles) {
   return (req, res, next) => {
     if (roles.indexOf(req.user.role) === -1) {
-      return res.sendStatus(401);
+      return res.sendStatus(403);
     } else {
       next();
     }

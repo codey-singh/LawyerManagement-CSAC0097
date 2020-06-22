@@ -5,11 +5,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
-const mongoose = require("mongoose");
 
-let accessTokens = [];
-
-router.post("/login", async function (req, res, next) {
+router.post("/login", async function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
 
@@ -44,11 +41,11 @@ router.post("/login", async function (req, res, next) {
   }
 });
 
-router.delete("/logout", function (req, res, next) {
+router.delete("/logout", function (req, res) {
   res.json({ msg: "app works" });
 });
 
-router.post("/register", async function (req, res, next) {
+router.post("/register", async function (req, res) {
   const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
   let generalRole = await Role.findOne({ role: "GENERAL" });
   let user = await User.create({

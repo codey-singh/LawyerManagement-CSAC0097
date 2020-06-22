@@ -2,7 +2,7 @@ const express = require("express");
 const User = require("../database/models/User");
 const router = express.Router();
 const moment = require("moment");
-
+const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
   // my profile
@@ -42,11 +42,30 @@ router.patch("/", async function (req, res, next) {
   res.json(status);
 });
 
-router.get("/:profile_id", async function (req, res, next) {
-  // my profile
-  let userProfile = await User.findOne({ _id: req.params.profile_id });
+router.patch("/:id", async function (req, res, next) {
+  let userId = req.params.id;
 
-  res.json({ ...userProfile._doc, password: null });
+  if (req.body.department_id === "") req.body.department_id = null;
+
+  let status = await User.updateOne(
+    { _id: userId },
+    {
+      ...req.body,
+    }
+  );
+
+  res.json(status);
 });
+
+router.get(
+  "/:profile_id",
+  authorizationMiddleware(["ADMIN", "MANAGER"]),
+  async function (req, res, next) {
+    // my profile
+    let userProfile = await User.findOne({ _id: req.params.profile_id });
+
+    res.json({ ...userProfile._doc, password: null });
+  }
+);
 
 module.exports = router;
