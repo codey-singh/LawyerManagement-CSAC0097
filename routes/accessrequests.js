@@ -40,12 +40,13 @@ router.patch("/:req_id", authorizationMiddleware(["ADMIN"]), async function (
 ) {
   const req_id = req.params.req_id;
   const status = req.body.status;
-  const accessRequests = await AccessRequest.patch(
+  const accessRequests = await AccessRequest.update(
     { _id: req_id },
     {
       status,
     }
   );
+  // Todo : Update access rights after approval
   console.log(accessRequests);
   res.json(accessRequests);
 });
