@@ -16,6 +16,25 @@ const authRouter = require("./routes/auth");
 const { authenticateMiddleware } = require("./middlewares/authMiddleware");
 const app = express();
 
+var allowCrossDomain = function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,PUT,POST,PATCH,DELETE,OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Content-Length, X-Requested-With"
+  );
+
+  // intercept OPTIONS method
+  if ("OPTIONS" == req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+};
+
 // Database connection logic starts
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
@@ -28,7 +47,7 @@ db.once("open", function () {
   console.log("we're connected!");
 });
 // Database connection logic ends
-app.use(cors());
+app.use(cors(allowCrossDomain));
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
