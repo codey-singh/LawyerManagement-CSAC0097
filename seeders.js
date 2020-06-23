@@ -28,6 +28,7 @@ db.once("open", async function () {
     { name: "Corporate Law", desc: "Corporate Law" },
     { name: "Immigration", desc: "Immigration Department" },
   ]);
+
   if (await Role.findOne()) await Role.collection.drop();
 
   await Role.collection.insertMany([
