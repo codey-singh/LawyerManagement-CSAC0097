@@ -64,7 +64,11 @@ router.get(
     // my profile
     let userProfile = await User.findOne({ _id: req.params.profile_id });
 
-    res.json({ ...userProfile._doc, password: null });
+    res.json({
+      ...userProfile._doc,
+      password: null,
+      dob: moment(userProfile._doc.dob).format("yyyy-MM-DD"),
+    });
   }
 );
 

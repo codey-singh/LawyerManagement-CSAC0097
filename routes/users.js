@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const moment = require("moment");
 const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
@@ -48,7 +49,10 @@ router.get(
       .populate("role_id")
       .populate("department_id");
 
-    res.json(user);
+    res.json({
+      ...user,
+      dob: moment(user.dob).format("yyyy-MM-DD"),
+    });
   }
 );
 
