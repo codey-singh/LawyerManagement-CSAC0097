@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
@@ -52,7 +53,8 @@ router.get(
 );
 
 router.post("/", authorizationMiddleware(["ADMIN"]), async (req, res, next) => {
-  const user = await User.create(req.body);
+  const password = bcrypt.hashSync(req.body.email, bcrypt.genSaltSync(10));
+  const user = await User.create({ ...req.body, password });
   res.json(user);
 });
 
