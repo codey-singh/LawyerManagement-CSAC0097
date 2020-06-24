@@ -4,7 +4,7 @@ const Role = require("../database/models/Role");
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
-  const roles = await Role.find({});
+  const roles = await Role.find({ role: { $nin: ["ADMIN"] } });
   console.log(roles);
   res.json(roles);
 });
