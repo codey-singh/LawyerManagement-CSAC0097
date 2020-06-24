@@ -12,7 +12,7 @@ router.get("/", authorizationMiddleware(["ADMIN", "MANAGER"]), async function (
   res,
   next
 ) {
-  const { page, per_page } = req.query;
+  const { page, per_page, department } = req.query;
 
   const roles = await Role.find({ role: { $in: ["ADMIN", "MANAGER"] } });
   const adminRole = roles.find((r) => r.role === "ADMIN");
@@ -22,6 +22,9 @@ router.get("/", authorizationMiddleware(["ADMIN", "MANAGER"]), async function (
   if (req.user.role === "MANAGER")
     query = { role_id: { $nin: [adminRole._id, managerRole._id] } };
 
+  if (department) {
+    query = { ...query, department_id: department };
+  }
   const userCount = await User.countDocuments(query);
 
   const users = await User.find(query, { password: 0, __v: 0 })
