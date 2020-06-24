@@ -52,10 +52,7 @@ router.get(
       .populate("role_id")
       .populate("department_id");
 
-    res.json({
-      ...user,
-      dob: moment(user.dob).format("yyyy-MM-DD"),
-    });
+    res.json(user);
   }
 );
 
