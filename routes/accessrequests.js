@@ -88,7 +88,6 @@ router.post("/", authorizationMiddleware(["GENERAL"]), async function (
     requestedAt: new Date(),
     user: userId,
   });
-  console.log(accessRequests);
   res.json(accessRequests);
 });
 
