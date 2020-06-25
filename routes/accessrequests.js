@@ -3,6 +3,9 @@ const router = express.Router();
 const AccessRequest = require("../database/models/AccessRequest");
 const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 
+const User = require("../database/models/User");
+const Role = require("../database/models/Role");
+
 /* GET home page. */
 router.get("/", authorizationMiddleware(["ADMIN"]), async function (
   req,
@@ -48,6 +51,29 @@ router.patch("/:req_id", authorizationMiddleware(["ADMIN"]), async function (
   );
   // Todo : Update access rights after approval
   console.log(accessRequests);
+  res.json(accessRequests);
+});
+router.patch("/", authorizationMiddleware(["ADMIN"]), async function (
+  req,
+  res,
+  next
+) {
+  const status = req.body.status;
+  const _ids = req.body.selectedRows.map((row) => row._id);
+  const userIds = req.body.selectedRows.map((row) => row.user);
+  const accessRequests = await AccessRequest.updateMany(
+    { _id: { $in: _ids } },
+    {
+      status,
+    }
+  );
+  if (status === "APPROVED") {
+    const managerRole = await Role.findOne({ role: "MANAGER" });
+    const users = await User.updateMany(
+      { _id: { $in: userIds } },
+      { role_id: managerRole._id }
+    );
+  }
   res.json(accessRequests);
 });
 
