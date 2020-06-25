@@ -53,6 +53,7 @@ router.patch("/:req_id", authorizationMiddleware(["ADMIN"]), async function (
   console.log(accessRequests);
   res.json(accessRequests);
 });
+
 router.patch("/", authorizationMiddleware(["ADMIN"]), async function (
   req,
   res,
