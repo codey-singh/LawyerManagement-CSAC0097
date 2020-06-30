@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
+const Captcha = require("../database/models/Capcha");
 
 router.post("/login", async function (req, res) {
   const username = req.body.username;
@@ -46,14 +47,23 @@ router.delete("/logout", function (req, res) {
 });
 
 router.post("/register", async function (req, res) {
-  const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-  let generalRole = await Role.findOne({ role: "GENERAL" });
-  let user = await User.create({
-    ...req.body,
-    password,
-    role_id: generalRole._id,
-  });
-  res.json({ ...user, password: null });
+  const { captchaRef, captchaText } = req.body;
+  console.log(captchaRef, captchaText);
+  const captcha = await Captcha.findById(captchaRef);
+
+  console.log(captcha);
+  if (captcha && captchaText === captcha.text) {
+    const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+    let generalRole = await Role.findOne({ role: "GENERAL" });
+    let user = await User.create({
+      ...req.body,
+      password,
+      role_id: generalRole._id,
+    });
+    res.json({ ...user, password: null });
+  } else {
+    res.json({ error: "Please check the userdata and captcha and retry." });
+  }
 });
 
 function generateAccessToken(user) {

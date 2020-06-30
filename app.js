@@ -13,6 +13,7 @@ const departmentRouter = require("./routes/departments");
 const rolesRouter = require("./routes/roles");
 const accessRequestsRouter = require("./routes/accessrequests");
 const authRouter = require("./routes/auth");
+const captchaRouter = require("./routes/captcha");
 const { authenticateMiddleware } = require("./middlewares/authMiddleware");
 const app = express();
 
@@ -41,5 +42,6 @@ app.use("/api/v1/departments", authenticateMiddleware, departmentRouter);
 app.use("/api/v1/roles", authenticateMiddleware, rolesRouter);
 app.use("/api/v1/accessrequests", authenticateMiddleware, accessRequestsRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/captcha", captchaRouter);
 
 module.exports = app;
