@@ -48,10 +48,7 @@ router.delete("/logout", function (req, res) {
 
 router.post("/register", async function (req, res) {
   const { captchaRef, captchaText } = req.body;
-  console.log(captchaRef, captchaText);
   const captcha = await Captcha.findById(captchaRef);
-
-  console.log(captcha);
   if (captcha && captchaText === captcha.text) {
     const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
     let generalRole = await Role.findOne({ role: "GENERAL" });
