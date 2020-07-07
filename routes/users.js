@@ -41,6 +41,7 @@ router.patch("/change-password", async (req, res, next) => {
   const loggedInUser = req.user.user_id;
   const { currentPassword, newPassword } = req.body;
   const user = await User.findById(loggedInUser);
+  console.log(currentPassword, user.password);
   bcrypt.compare(currentPassword, user.password, async (err, same) => {
     if (err || !same)
       res.json({ error: "Wrong current password. Please check again." });

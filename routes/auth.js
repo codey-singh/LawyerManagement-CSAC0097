@@ -37,7 +37,7 @@ router.post("/login", async function (req, res) {
         }
       });
     } else {
-      res.setStatus(403).send();
+      res.status(403).send();
     }
   }
 });
