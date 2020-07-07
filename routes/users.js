@@ -1,6 +1,5 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const moment = require("moment");
 const { authorizationMiddleware } = require("../middlewares/authMiddleware");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
@@ -36,6 +35,28 @@ router.get("/", authorizationMiddleware(["ADMIN", "MANAGER"]), async function (
   res.json({ users, count: userCount, page: page });
 });
 
+// PATCH: Route /users/change-password
+
+router.patch("/change-password", async (req, res, next) => {
+  const loggedInUser = req.user.user_id;
+  const { currentPassword, newPassword } = req.body;
+  const user = await User.findById(loggedInUser);
+  bcrypt.compare(currentPassword, user.password, async (err, same) => {
+    if (err || !same)
+      res.json({ error: "Wrong current password. Please check again." });
+    else {
+      const password = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10));
+      const result = await User.updateOne(
+        { _id: loggedInUser },
+        {
+          password,
+        }
+      );
+      res.json(result);
+    }
+  });
+});
+
 router.get(
   "/:id",
   authorizationMiddleware(["ADMIN", "MANAGER"]),
@@ -61,5 +82,15 @@ router.post("/", authorizationMiddleware(["ADMIN"]), async (req, res, next) => {
   const user = await User.create({ ...req.body, password });
   res.json(user);
 });
+
+router.delete(
+  "/",
+  authorizationMiddleware(["ADMIN"]),
+  async (req, res, next) => {
+    let _ids = req.query._ids.split(",");
+    const result = await User.deleteMany({ _id: { $in: _ids } });
+    res.json(result);
+  }
+);
 
 module.exports = router;
