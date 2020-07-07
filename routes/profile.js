@@ -44,13 +44,29 @@ router.patch("/", async function (req, res, next) {
 
 router.patch("/:id", async function (req, res, next) {
   let userId = req.params.id;
+  console.log(req.body);
+  const {
+    email,
+    firstname,
+    lastname,
+    dob,
+    phonenumber,
+    department_id,
+    role_id,
+  } = req.body;
 
   if (req.body.department_id === "") req.body.department_id = null;
 
   let status = await User.updateOne(
     { _id: userId },
     {
-      ...req.body,
+      email,
+      firstname,
+      lastname,
+      dob,
+      phonenumber,
+      department_id,
+      role_id,
     }
   );
 
@@ -61,7 +77,6 @@ router.get(
   "/:profile_id",
   authorizationMiddleware(["ADMIN", "MANAGER"]),
   async function (req, res, next) {
-    // my profile
     let userProfile = await User.findOne({ _id: req.params.profile_id });
 
     res.json({
