@@ -29,19 +29,24 @@ db.once("open", function () {
   console.log("we're connected!");
 });
 // Database connection logic ends
+
+// basic middleware configuration.
 app.use(cors({ origin: "*" }));
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
+// without any authentication
 app.use("/", indexRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/captcha", captchaRouter);
+
+// with authentication
 app.use("/api/v1/users", authenticateMiddleware, usersRouter);
 app.use("/api/v1/profile", authenticateMiddleware, profileRouter);
 app.use("/api/v1/departments", authenticateMiddleware, departmentRouter);
 app.use("/api/v1/roles", authenticateMiddleware, rolesRouter);
 app.use("/api/v1/accessrequests", authenticateMiddleware, accessRequestsRouter);
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/captcha", captchaRouter);
 
 module.exports = app;
