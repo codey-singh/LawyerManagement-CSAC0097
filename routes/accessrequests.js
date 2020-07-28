@@ -10,7 +10,6 @@ const Role = require("../database/models/Role");
 router.get("/", authorizationMiddleware(["ADMIN"]), async function (
   req,
   res,
-  next
 ) {
   const { page, per_page } = req.query;
 
@@ -28,7 +27,7 @@ router.get("/", authorizationMiddleware(["ADMIN"]), async function (
 router.get(
   "/my",
   authorizationMiddleware(["ADMIN", "MANAGER", "GENERAL"]),
-  async function (req, res, next) {
+  async function (req, res) {
     const accessRequest = await AccessRequest.findOne({
       user: req.user.user_id,
     }).populate("user");
@@ -39,7 +38,6 @@ router.get(
 router.patch("/:req_id", authorizationMiddleware(["ADMIN"]), async function (
   req,
   res,
-  next
 ) {
   const req_id = req.params.req_id;
   const status = req.body.status;
@@ -57,7 +55,6 @@ router.patch("/:req_id", authorizationMiddleware(["ADMIN"]), async function (
 router.patch("/", authorizationMiddleware(["ADMIN"]), async function (
   req,
   res,
-  next
 ) {
   const status = req.body.status;
   const _ids = req.body.selectedRows.map((row) => row._id);
@@ -81,7 +78,6 @@ router.patch("/", authorizationMiddleware(["ADMIN"]), async function (
 router.post("/", authorizationMiddleware(["GENERAL"]), async function (
   req,
   res,
-  next
 ) {
   const userId = req.user.user_id;
   const accessRequests = await AccessRequest.create({
