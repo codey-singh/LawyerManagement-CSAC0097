@@ -70,7 +70,7 @@ router.patch("/", authorizationMiddleware(["ADMIN"]), async function (
   );
   if (status === "APPROVED") {
     const managerRole = await Role.findOne({ role: "MANAGER" });
-    const users = await User.updateMany(
+    await User.updateMany(
       { _id: { $in: userIds } },
       { role_id: managerRole._id }
     );
