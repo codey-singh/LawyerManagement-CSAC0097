@@ -38,12 +38,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-// without any authentication
+// routes without any authentication
 app.use("/", indexRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/captcha", captchaRouter);
 
-// with authentication
+// routes with authentication
 app.use("/api/v1/users", authenticateMiddleware, usersRouter);
 app.use("/api/v1/profile", authenticateMiddleware, profileRouter);
 app.use("/api/v1/departments", authenticateMiddleware, departmentRouter);
