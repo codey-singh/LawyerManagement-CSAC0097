@@ -31,14 +31,18 @@ router.patch("/", async function (req, res, next) {
   let loggedInUser = req.user.user_id;
 
   if (req.body.department_id === "") req.body.department_id = null;
-
+  const { email, firstname, lastname, dob, phonenumber } = req.body;
+  console.log(req.body);
   let status = await User.updateOne(
     { _id: loggedInUser },
     {
-      ...req.body,
+      email,
+      firstname,
+      lastname,
+      dob,
+      phonenumber,
     }
   );
-
   res.json(status);
 });
 
