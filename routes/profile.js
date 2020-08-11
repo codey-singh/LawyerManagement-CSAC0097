@@ -43,7 +43,6 @@ router.patch("/", async function (req, res, next) {
       phonenumber,
     }
   );
-
   res.json(status);
 });
 
