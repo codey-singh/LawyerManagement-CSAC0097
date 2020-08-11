@@ -19,7 +19,7 @@ router.get("/", authorizationMiddleware(["ADMIN", "MANAGER"]), async function (
   let query = { role_id: { $nin: [adminRole._id] } };
 
   if (req.user.role === "MANAGER")
-    query = { role_id: { $nin: [adminRole._id, managerRole._id] } };
+    query = { role_id: { $nin: [adminRole._id] } };
 
   if (department) {
     query = { ...query, department_id: department };
@@ -64,12 +64,7 @@ router.get(
   async function (req, res, next) {
     const roles = await Role.find({ role: { $in: ["ADMIN", "MANAGER"] } });
     const adminRole = roles.find((r) => r.role === "ADMIN");
-    const managerRole = roles.find((r) => r.role === "MANAGER");
-    let query = { role_id: { $nin: [adminRole._id] } };
-
-    if (req.user.role === "MANAGER")
-      query = { role_id: { $nin: [adminRole._id, managerRole._id] } };
-
+    let query = { _id: req.params.id, role_id: { $nin: [adminRole._id] } };
     const user = await User.findOne(query, { password: 0, __v: 0 })
       .populate("role_id")
       .populate("department_id");
